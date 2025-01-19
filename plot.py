@@ -34,6 +34,7 @@ if pdb_option == 'Por URL':
                 with open(temp_pdb_path, "wb") as f:
                     f.write(pdb_file_content)
                 pdb_file = temp_pdb_path  # Usar la ruta del archivo temporal
+                pdb_id = os.path.basename(temp_pdb_path).split(".")[0]
         except requests.exceptions.RequestException as e:
             st.error(f"Error al intentar descargar el archivo: {e}")
 
@@ -52,6 +53,7 @@ elif pdb_option == 'Subir archivo PDB':
         with open(pdb_path, "wb") as f:
             f.write(pdb_file.getbuffer())
         pdb_file = pdb_path  # Ahora pasamos la ruta del archivo
+        pdb_id = os.path.basename(temp_pdb_path).split(".")[0]
 
 # Si se tiene el archivo PDB
 if pdb_file:
@@ -73,5 +75,7 @@ st.download_button(
     file_name=f"diagrama_ramachandran_{pdb_id}.png",
     mime="image/png"
 )
+except Exception as e:
+        st.error(f"Ocurrió un error al generar el diagrama de Ramachandran: {e}")
 
 st.balloons()
