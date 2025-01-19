@@ -53,7 +53,6 @@ elif pdb_option == 'Subir archivo PDB':
         with open(pdb_path, "wb") as f:
             f.write(pdb_file.getbuffer())
         pdb_file = pdb_path  # Ahora pasamos la ruta del archivo
-        pdb_id = uploaded_file.name.split(".")[0]
 
 # Si se tiene el archivo PDB
 if pdb_file:
