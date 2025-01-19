@@ -28,35 +28,41 @@ def get_alphafold_structure(sequence):
 st.title("Generador de Diagrama de Ramachandran con AlphaFold")
 st.text("Autor: Leonardo Marcelo Abanto-Florez")
 
+# Entrada de texto para la secuencia de aminoácidos
 sequence = st.text_input("Escribe la secuencia de aminoácidos: ", "")
 
 if sequence:
+    # Obtener estructura de AlphaFold
     alphafold_structure = get_alphafold_structure(sequence)
+    
     if alphafold_structure:
         # Obtener el archivo PDB desde la URL proporcionada
         pdb_file_response = requests.get(alphafold_structure)
         
         if pdb_file_response.status_code == 200:
-            pdb_file = pdb_file_response.text
+            pdb_file = pdb_file_response.text  # El archivo PDB está en texto
             plt.figure()
-            plot(pdb_file)  # Visualiza el diagrama de Ramachandran
+            try:
+                plot(pdb_file)  # Visualiza el diagrama de Ramachandran
+                st.markdown("**Resultado :gift:**")
+                st.pyplot(plt.gcf())
 
-            st.markdown("**Resultado :gift:**")
-            st.pyplot(plt.gcf())
+                # Buffer de memoria para guardar la imagen
+                buffer = BytesIO()
+                plt.savefig(buffer, format='png')
+                buffer.seek(0)
 
-            
-            buffer = BytesIO()
-            plt.savefig(buffer, format='png')
-            buffer.seek(0)
+                # Botón de descarga
+                st.download_button(
+                    label="Descargar imagen",
+                    data=buffer,
+                    file_name="diagrama_ramachandran.png",
+                    mime="image/png"
+                )
 
-            st.download_button(
-                label="Descargar imagen",
-                data=buffer,
-                file_name="diagrama_ramachandran.png",
-                mime="image/png"
-            )
-
-            st.balloons()
+                st.balloons()
+            except Exception as e:
+                st.error(f"Hubo un error al generar el diagrama de Ramachandran: {e}")
         else:
             st.error(f"No se pudo obtener el archivo PDB desde la URL: {alphafold_structure}")
     else:
