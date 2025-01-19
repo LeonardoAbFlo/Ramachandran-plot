@@ -23,11 +23,15 @@ if pdb_option == 'Por URL':
             response = requests.get(pdb_url)
             response.raise_for_status()  # Verifica si la solicitud fue exitosa
             pdb_file_content = response.content  # Almacenar el contenido como bytes
-            # Guardar el contenido en un archivo temporal
-            temp_pdb_path = os.path.join("/tmp", "temp_pdb_file.pdb")
-            with open(temp_pdb_path, "wb") as f:
-                f.write(pdb_file_content)
-            pdb_file = temp_pdb_path  # Usar la ruta del archivo temporal
+            # Verificar si el archivo tiene contenido
+            if len(pdb_file_content) == 0:
+                st.error("El archivo descargado está vacío.")
+            else:
+                # Guardar el contenido en un archivo temporal
+                temp_pdb_path = os.path.join(".", "temp_pdb_file.pdb")
+                with open(temp_pdb_path, "wb") as f:
+                    f.write(pdb_file_content)
+                pdb_file = temp_pdb_path  # Usar la ruta del archivo temporal
         except requests.exceptions.RequestException as e:
             st.error(f"Error al intentar descargar el archivo: {e}")
 
