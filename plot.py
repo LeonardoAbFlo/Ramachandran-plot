@@ -22,7 +22,12 @@ if pdb_option == 'Por URL':
         try:
             response = requests.get(pdb_url)
             response.raise_for_status()  # Verifica si la solicitud fue exitosa
-            pdb_file = response.text
+            pdb_file_content = response.content  # Almacenar el contenido como bytes
+            # Guardar el contenido en un archivo temporal
+            temp_pdb_path = os.path.join("/tmp", "temp_pdb_file.pdb")
+            with open(temp_pdb_path, "wb") as f:
+                f.write(pdb_file_content)
+            pdb_file = temp_pdb_path  # Usar la ruta del archivo temporal
         except requests.exceptions.RequestException as e:
             st.error(f"Error al intentar descargar el archivo: {e}")
 
