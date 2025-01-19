@@ -75,7 +75,5 @@ st.download_button(
     file_name=f"diagrama_ramachandran_{pdb_id}.png",
     mime="image/png"
 )
-except Exception as e:
-        st.error(f"Ocurrió un error al generar el diagrama de Ramachandran: {e}")
 
 st.balloons()
