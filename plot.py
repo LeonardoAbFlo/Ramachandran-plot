@@ -12,6 +12,8 @@ st.text("Autor: Leonardo Marcelo Abanto-Florez")
 
 st.sidebar.image("ramachandran_logo.png", caption="inRamachandran")
 
+pdb_file = None
+
 # Opciones para ingresar el archivo PDB
 pdb_option = st.radio("Selecciona cómo ingresar el archivo PDB:", ('Por URL', 'Por código PDB', 'Subir archivo PDB'))
 
