@@ -1,35 +1,51 @@
 import streamlit as st
 import matplotlib.pyplot as plt
-from ramachandraw.parser import get_phi_psi
-from ramachandraw.utils import fetch_pdb 
 from ramachandraw.utils import plot
-from io import BytesIO 
+from io import BytesIO
+import requests
 
-st.title("Generador de Diagrama de Ramachandran")
+# Función para obtener la estructura de AlphaFold
+def get_alphafold_structure(sequence):
+    url = 'https://colabfold.com/api/v1/predict'
+    payload = {'sequence': sequence}
+    response = requests.post(url, json=payload)
+    if response.status_code == 200:
+        return response.json()  # Esto devuelve la estructura generada por AlphaFold
+    else:
+        return None
+
+# Título de la aplicación
+st.title("Generador de Diagrama de Ramachandran con AlphaFold")
 st.text("Autor: Leonardo Marcelo Abanto-Florez")
 
-st.sidebar.image("ramachandran_logo.png", caption="inRamachandran")
+# Entrada de texto para la secuencia de aminoácidos
+sequence = st.text_input("Escribe la secuencia de aminoácidos: ", "")
 
-pdb_id = st.text_input("Escribe el código PDB de 4 dígitos, por ejemplo: ", "3PL1")
-pdb_file = fetch_pdb(pdb_id)
-plt.figure()
-plot(pdb_file)
+if sequence:
+    # Obtener estructura de AlphaFold
+    alphafold_structure = get_alphafold_structure(sequence)
+    if alphafold_structure:
+        pdb_file = alphafold_structure['pdb']  # Suponiendo que recibes un archivo PDB
+        plt.figure()
+        plot(pdb_file)  # Visualiza el diagrama de Ramachandran
 
-st.markdown("**Resultado :gift:**")
-st.pyplot(plt.gcf())
+        st.markdown("**Resultado :gift:**")
+        st.pyplot(plt.gcf())
 
-# Buffer de memoria para guardar la imagen
-buffer = BytesIO()
-plt.savefig(buffer, format='png')
-buffer.seek(0)  
+        # Buffer de memoria para guardar la imagen
+        buffer = BytesIO()
+        plt.savefig(buffer, format='png')
+        buffer.seek(0)
 
-# Botón de descarga
-st.download_button(
-    label="Descargar imagen",
-    data=buffer,
-    file_name=f"diagrama_ramachandran_{pdb_id}.png",
-    mime="image/png"
-)
+        # Botón de descarga
+        st.download_button(
+            label="Descargar imagen",
+            data=buffer,
+            file_name="diagrama_ramachandran.png",
+            mime="image/png"
+        )
 
-st.balloons()
-
+        st.balloons()
+    else:
+        st.error("No se pudo obtener la estructura de AlphaFold.")
+    
