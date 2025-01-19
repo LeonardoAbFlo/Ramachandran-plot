@@ -1,5 +1,7 @@
 import streamlit as st
 import matplotlib.pyplot as plt
+import requests
+import os
 from ramachandraw.parser import get_phi_psi
 from ramachandraw.utils import fetch_pdb 
 from ramachandraw.utils import plot
