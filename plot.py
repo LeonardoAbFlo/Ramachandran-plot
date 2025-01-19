@@ -34,7 +34,11 @@ elif pdb_option == 'Por código PDB':
 elif pdb_option == 'Subir archivo PDB':
     pdb_file = st.file_uploader("Carga tu archivo PDB", type="pdb")
     if pdb_file:
-        pdb_file = pdb_file.read().decode("utf-8")
+        # Guardar el archivo temporalmente
+        pdb_path = os.path.join("/tmp", pdb_file.name)
+        with open(pdb_path, "wb") as f:
+            f.write(pdb_file.getbuffer())
+        pdb_file = pdb_path  # Ahora pasamos la ruta del archivo
 
 # Si se tiene el archivo PDB
 if pdb_file:
